@@ -5,6 +5,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 //import mongoose
 const mongoose = require('mongoose');
+const path = require('path');
+const { buildQueries } = require('@testing-library/react');
 
 app.use(cors());
 app.use(function(req, res, next) {
@@ -15,8 +17,10 @@ app.use(function(req, res, next) {
     next();
     });
 
-
-
+//path for build
+app.use(express.static(path.join(__dirname, '../build')));
+//path for static build
+app.use('/static', express.static(path.join(__dirname, 'build//static')));
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -111,6 +115,11 @@ MovieModel.create({
         poster:req.body.poster
     })
     res.send('Item Added');
+})
+
+//any other http request going to be send back here
+app.get('*', (req,res)=>{
+    res.sendFile(path.join(__dirname+'/../build/index.html'));
 })
 
 app.listen(port, () => {
